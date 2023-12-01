@@ -1,4 +1,4 @@
-package com.openclassrooms.configuration;
+package com.openclassrooms.apichatop.configuration;
 
 
 import org.springframework.context.annotation.Bean;
@@ -26,4 +26,19 @@ public class SpringSecurityConfig {
 				.httpBasic(Customizer.withDefaults())
 				.build();		
 	}
+	
+	@Bean
+	public UserDetailsService users() {
+		UserDetails user = User.builder().username("user").password(passwordEncoder().encode("password"))
+				.build();		
+		return new InMemoryUserDetailsManager(user);
+	}
+
+
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+
 }

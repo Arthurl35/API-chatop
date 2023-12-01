@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/rentals")
+@RequestMapping("/api/rentals")
 public class RentalController {
 
     @Autowired
@@ -18,7 +18,7 @@ public class RentalController {
      * Read - Get all rentals
      * @return - A List of all rentals
      */
-    @GetMapping("/")
+    @GetMapping("")
     public Iterable<Rental> getAllRentals() {
         return rentalService.getAllRentals();
     }
