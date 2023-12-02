@@ -1,8 +1,8 @@
-package com.openclassrooms.apichatop.controller;
+package com.openclassrooms.apichatop.controllers;
 
 import com.openclassrooms.apichatop.model.Rental;
-import com.openclassrooms.apichatop.service.RentalService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.openclassrooms.apichatop.services.RentalService;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/rentals")
 public class RentalController {
-
-    @Autowired
+ 
     private RentalService rentalService;
+
+    public RentalController(RentalService rentalService) {
+        this.rentalService = rentalService;
+    }
 
     /**
      * Read - Get all rentals
