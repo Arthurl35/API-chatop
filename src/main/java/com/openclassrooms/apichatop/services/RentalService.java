@@ -2,6 +2,9 @@ package com.openclassrooms.apichatop.services;
 
 import com.openclassrooms.apichatop.model.Rental;
 import com.openclassrooms.apichatop.repository.RentalRepository;
+
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 
@@ -16,5 +19,9 @@ public class RentalService {
 
     public Iterable<Rental> getAllRentals() {
         return rentalRepository.findAll();
+    }
+
+    public Optional<Rental> getRentalById(Long id) {
+        return rentalRepository.findById(id);
     }
 }
