@@ -45,4 +45,9 @@ public class RentalService {
         });
     }
     
+    public Rental createRental(Rental newRental) {
+        newRental.setCreated_at(new Timestamp(System.currentTimeMillis()));
+        newRental.setUpdated_at(newRental.getCreated_at());
+        return rentalRepository.save(newRental);
+    }
 }
