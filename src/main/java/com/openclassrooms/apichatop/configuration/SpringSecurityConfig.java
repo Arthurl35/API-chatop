@@ -39,16 +39,22 @@ public class SpringSecurityConfig {
     }
 	
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {		
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http
 				.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(auth -> auth.requestMatchers("h2-console/**").permitAll().anyRequest().authenticated())
-				.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+				//.authorizeHttpRequests(authorize -> authorize
+				//	.antMatchers("/h2-console/**").permitAll()
+				//	.antMatchers("/login").permitAll() 
+				//	.anyRequest().authenticated()
+				//)
+				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
 				.httpBasic(Customizer.withDefaults())
-				.build();		
+				.build();
 	}
-
+	
+	
+	
 	@Bean
 	public JwtDecoder jwtDecoder() {
 		SecretKeySpec secretKey = new SecretKeySpec(this.jwtKey.getBytes(), 0, this.jwtKey.getBytes().length,"RSA");
