@@ -37,7 +37,7 @@ public class AuthController {
         // Vérifier si l'utilisateur existe dans la base de données avec le login donné
         User user = userService.getUserByEmail(login);
 
-        if (user != null && password.equals(user.getPassword())) {
+        if (user != null && userService.checkPassword(user, password)) {
             // Utilisateur trouvé et mot de passe correspondant
             String token = jwtService.generateToken(user);
             return ResponseEntity.ok(token);

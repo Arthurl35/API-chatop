@@ -28,6 +28,10 @@ public class UserService {
         return existingUser != null;
     }
 
+    public boolean checkPassword(User user, String password) {
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
     public User createUser(String email, String name, String password) {
         // Vérifier si l'utilisateur existe déjà avec cet email
         User existingUser = userRepository.findByEmail(email);

@@ -45,7 +45,7 @@ public class SpringSecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				//.authorizeHttpRequests(authorize -> authorize
 				//	.antMatchers("/h2-console/**").permitAll()
-				//	.antMatchers("/login").permitAll() 
+				//	.antMatchers("/register").permitAll() // Autorisez l'accès à /register sans authentification
 				//	.anyRequest().authenticated()
 				//)
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
