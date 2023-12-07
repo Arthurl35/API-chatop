@@ -2,6 +2,7 @@ package com.openclassrooms.apichatop.controllers;
 
 import com.openclassrooms.apichatop.model.Rental;
 import com.openclassrooms.apichatop.services.RentalService;
+import com.openclassrooms.apichatop.services.UserService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,9 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class RentalController {
 
     private RentalService rentalService;
+    private UserService userService;
 
-    public RentalController(RentalService rentalService) {
+    public RentalController(RentalService rentalService, UserService userService) {
         this.rentalService = rentalService;
+        this.userService = userService;
     }
 
     /**

@@ -3,25 +3,30 @@ package com.openclassrooms.apichatop.services;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+
+import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import com.openclassrooms.apichatop.model.User;
 
-import org.springframework.security.oauth2.jwt.Jwt;
 
 
 @Service
 public class JWTService {
 
     private JwtEncoder jwtEncoder;
+    private JwtDecoder jwtDecoder;
 
-    public JWTService(JwtEncoder jwtEncoder) {
+    public JWTService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder) {
         this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
     }
 
     public String generateToken(User user) {
@@ -39,5 +44,10 @@ public class JWTService {
         
         // Extraction de la représentation textuelle du JWT
         return jwt.getTokenValue();
+    }
+
+        public String extractEmailFromToken(String token) {
+            Jwt jwt = jwtDecoder.decode(token);
+            return jwt.getClaim("email");
     }
 }
