@@ -1,5 +1,8 @@
 package com.openclassrooms.apichatop.services;
 
+import java.sql.Timestamp;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.openclassrooms.apichatop.model.User;
@@ -8,9 +11,12 @@ import com.openclassrooms.apichatop.repository.UserRepository;
 public class UserService {
 
     private UserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder;
+    
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User getUserByEmail(String email) {
@@ -33,7 +39,16 @@ public class UserService {
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setName(name);
-        newUser.setPassword(password); // Assurez-vous de stocker les mots de passe de manière sécurisée dans la réalité
+        
+        // Sécuriser et stocker le mot de passe de manière appropriée (par exemple, en utilisant BCrypt)
+        String hashedPassword = passwordEncoder.encode(password);
+        newUser.setPassword(hashedPassword);
+
+        // Gérer les timestamps pour la création et la mise à jour de l'utilisateur
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+        newUser.setCreated_at(currentTimestamp);
+        newUser.setUpdated_at(currentTimestamp);
+
 
         // Enregistrer le nouvel utilisateur dans la base de données
         userRepository.save(newUser);
