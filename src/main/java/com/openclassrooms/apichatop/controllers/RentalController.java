@@ -1,9 +1,12 @@
 package com.openclassrooms.apichatop.controllers;
 
 import com.openclassrooms.apichatop.model.Rental;
+import com.openclassrooms.apichatop.model.User;
+import com.openclassrooms.apichatop.services.JWTService;
 import com.openclassrooms.apichatop.services.RentalService;
 import com.openclassrooms.apichatop.services.UserService;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,11 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class RentalController {
 
     private RentalService rentalService;
-    private UserService userService;
+    private UserService userService;    
+    private JWTService jwtService;
 
-    public RentalController(RentalService rentalService, UserService userService) {
+
+    public RentalController(RentalService rentalService,
+                            UserService userService,
+                            JWTService jwtService) {
         this.rentalService = rentalService;
-        this.userService = userService;
+        this.userService = userService;        
+        this.jwtService = jwtService;
+
     }
 
     /**
@@ -59,13 +69,22 @@ public class RentalController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createRental(@RequestBody Rental newRental) {
-        if (newRental.getName() == null || newRental.getSurface() == null || 
-            newRental.getPrice() == null || newRental.getDescription() == null) {
-            return ResponseEntity.badRequest().body("Name, surface, price, and description are required fields");
+    public ResponseEntity<?> createRental(@RequestBody Rental newRental,
+                                          @RequestHeader("Authorization") String token) {
+                
+        String userEmail = jwtService.extractEmailFromToken(token);
+        
+        if (userEmail != null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-    
-        Rental createdRental = rentalService.createRental(newRental);
+
+        User user = userService.getUserByEmail(userEmail);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Rental createdRental = rentalService.createRental(newRental, user);
+
         if (createdRental != null) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Rental created successfully");

@@ -1,6 +1,7 @@
 package com.openclassrooms.apichatop.services;
 
 import com.openclassrooms.apichatop.model.Rental;
+import com.openclassrooms.apichatop.model.User;
 import com.openclassrooms.apichatop.repository.RentalRepository;
 
 import java.sql.Timestamp;
@@ -45,9 +46,24 @@ public class RentalService {
         });
     }
     
-    public Rental createRental(Rental newRental) {
+    public Rental createRental(Rental newRental, User user) {
+        System.out.println("User ID: " + user.getId()); // Vérifie l'ID de l'utilisateur
+        newRental.setOwner_id(user.getId());
         newRental.setCreated_at(new Timestamp(System.currentTimeMillis()));
         newRental.setUpdated_at(newRental.getCreated_at());
-        return rentalRepository.save(newRental);
+    
+        System.out.println("New Rental Data: " + newRental.toString()); // Affiche les détails de la nouvelle location
+    
+        // Sauvegarde de la nouvelle location dans la base de données
+        Rental savedRental = rentalRepository.save(newRental);
+    
+        if (savedRental != null) {
+            System.out.println("Rental created successfully: " + savedRental.getId()); // Vérifie l'ID de la location sauvegardée
+        } else {
+            System.out.println("Failed to create rental"); // Affiche si la création a échoué
+        }
+    
+        return savedRental;
     }
+    
 }
