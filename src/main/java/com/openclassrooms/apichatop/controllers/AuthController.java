@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openclassrooms.apichatop.dto.RegisterDto;
 import com.openclassrooms.apichatop.dto.UserDto;
 import com.openclassrooms.apichatop.model.User;
 import com.openclassrooms.apichatop.repository.UserRepository;
@@ -50,13 +51,10 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody Map<String, String> registrationDetails) {
-        String email = registrationDetails.get("email");
-        String name = registrationDetails.get("name");
-        String password = registrationDetails.get("password");
-        if (email == null || name == null || password == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email, name, and password are required");
-        }
+    public ResponseEntity<String> registerUser(@RequestBody RegisterDto registrationDetails) {
+        String email = registrationDetails.getEmail();
+        String name = registrationDetails.getName();
+        String password = registrationDetails.getPassword();
 
         // Vérifier si l'utilisateur existe déjà avec cet email en utilisant le service
         boolean userExists = userService.isUserExistByEmail(email);

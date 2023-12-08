@@ -21,11 +21,9 @@ import com.openclassrooms.apichatop.model.User;
 public class JWTService {
 
     private JwtEncoder jwtEncoder;
-    private JwtDecoder jwtDecoder;
 
-    public JWTService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder) {
+    public JWTService(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
-        this.jwtDecoder = jwtDecoder;
     }
 
     public String generateToken(User user) {
