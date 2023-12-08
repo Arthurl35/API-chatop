@@ -44,9 +44,4 @@ public class JWTService {
         // Extraction de la représentation textuelle du JWT
         return jwt.getTokenValue();
     }
-
-        public String extractEmailFromToken(String token) {
-            Jwt jwt = jwtDecoder.decode(token);
-            return jwt.getClaim("email");
-    }
 }

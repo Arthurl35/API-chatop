@@ -14,6 +14,8 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,15 +33,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class RentalController {
 
     private RentalService rentalService;
-    private UserService userService;    
+    private UserService userService;
     private JWTService jwtService;
 
-
     public RentalController(RentalService rentalService,
-                            UserService userService,
-                            JWTService jwtService) {
+            UserService userService,
+            JWTService jwtService) {
         this.rentalService = rentalService;
-        this.userService = userService;        
+        this.userService = userService;
         this.jwtService = jwtService;
 
     }
@@ -73,35 +74,31 @@ public class RentalController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createRental(@RequestBody Rental newRental,
-                                          @RequestHeader("Authorization") String token) {
-                
-        String userEmail = jwtService.extractEmailFromToken(token);
-        
-        if (userEmail != null) {
+    public ResponseEntity<?> createRental(@RequestBody Rental newRental, Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Jwt jwtToken = (Jwt) authentication.getPrincipal();
+        // Récupérer le claim "email" du token JWT
+        String userEmail = jwtToken.getClaimAsString("email");
+
+        if (userEmail == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         User user = userService.getUserByEmail(userEmail);
+
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         Rental createdRental = rentalService.createRental(newRental, user);
-
-        if (createdRental != null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Rental created successfully");
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } else {
+        if (createdRental == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-    @RequestMapping(value = "/username", method = RequestMethod.GET)
-    @ResponseBody
-    public String currentUserName(Principal principal) {
-        return principal.getName();
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Rental created successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
- 
