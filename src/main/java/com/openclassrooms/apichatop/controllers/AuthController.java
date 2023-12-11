@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openclassrooms.apichatop.dto.LoginDto;
 import com.openclassrooms.apichatop.dto.RegisterDto;
 import com.openclassrooms.apichatop.dto.UserDto;
 import com.openclassrooms.apichatop.model.User;
@@ -33,21 +34,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> getToken(@RequestBody Map<String, String> loginDetails) {
-        String login = loginDetails.get("login");
-        String password = loginDetails.get("password");
+    public ResponseEntity<String> getToken(@RequestBody LoginDto loginDetails) {
+        String login = loginDetails.getLogin();
+        String password = loginDetails.getPassword();
 
         // Vérifier si l'utilisateur existe dans la base de données avec le login donné
         User user = userService.getUserByEmail(login);
 
-        if (user != null && userService.checkPassword(user, password)) {
-            // Utilisateur trouvé et mot de passe correspondant
-            String token = jwtService.generateToken(user);
-            return ResponseEntity.ok(token);
-        } else {
+        if (user == null || !userService.checkPassword(user, password)) {
             // Utilisateur non trouvé ou mot de passe incorrect
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found or incorrect credentials");
         }
+
+        // Utilisateur trouvé et mot de passe correspondant
+        String token = jwtService.generateToken(user);
+        return ResponseEntity.ok(token);
     }
 
     @PostMapping("/register")
