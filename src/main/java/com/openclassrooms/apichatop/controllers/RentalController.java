@@ -2,12 +2,9 @@ package com.openclassrooms.apichatop.controllers;
 
 import com.openclassrooms.apichatop.model.Rental;
 import com.openclassrooms.apichatop.model.User;
-import com.openclassrooms.apichatop.services.JWTService;
 import com.openclassrooms.apichatop.services.RentalService;
 import com.openclassrooms.apichatop.services.UserService;
 
-import java.security.Principal;
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -16,16 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,14 +27,11 @@ public class RentalController {
 
     private RentalService rentalService;
     private UserService userService;
-    private JWTService jwtService;
 
     public RentalController(RentalService rentalService,
-            UserService userService,
-            JWTService jwtService) {
+            UserService userService) {
         this.rentalService = rentalService;
         this.userService = userService;
-        this.jwtService = jwtService;
 
     }
 
@@ -97,8 +87,8 @@ public class RentalController {
         if (createdRental == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Rental created successfully");
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Rental created successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
