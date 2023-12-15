@@ -34,11 +34,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> getToken(@RequestBody LoginDto loginDetails) {
-        String login = loginDetails.getLogin();
+        String email = loginDetails.getEmail();
         String password = loginDetails.getPassword();
     
         // Vérifier si l'utilisateur existe dans la base de données avec le login donné
-        User user = userService.getUserByEmail(login);
+        User user = userService.getUserByEmail(email);
     
         if (user == null || !userService.checkPassword(user, password)) {
             // Utilisateur non trouvé ou mot de passe incorrect

@@ -6,7 +6,7 @@ import lombok.NonNull;
 @Data
 public class LoginDto {
     @NonNull
-    private String login;
+    private String email;
 
     @NonNull
     private String password;
