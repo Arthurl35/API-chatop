@@ -3,6 +3,8 @@ package com.openclassrooms.apichatop.services;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -25,7 +27,7 @@ public class JWTService {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String generateToken(User user) {
+    public Map<String, String> generateToken(User user) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
@@ -38,7 +40,10 @@ public class JWTService {
         JwtEncoderParameters encoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
         Jwt jwt = this.jwtEncoder.encode(encoderParameters);
         
-        // Extraction de la représentation textuelle du JWT
-        return jwt.getTokenValue();
+        // Création de l'objet contenant le token
+        Map<String, String> tokenObject = new HashMap<>();
+        tokenObject.put("token", jwt.getTokenValue());
+        
+        return tokenObject;
     }
 }

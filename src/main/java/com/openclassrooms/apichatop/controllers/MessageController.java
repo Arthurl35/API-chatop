@@ -32,9 +32,6 @@ public class MessageController {
 
     @PostMapping("")
     public ResponseEntity<?> createMessage(@RequestBody CreateMessageDto messageDto, Authentication authentication) {
-        if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
         Jwt jwtToken = (Jwt) authentication.getPrincipal();
         // Récupérer le claim "email" du token JWT

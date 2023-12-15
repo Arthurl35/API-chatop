@@ -1,5 +1,8 @@
 package com.openclassrooms.apichatop.controllers;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,45 +33,48 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> getToken(@RequestBody LoginDto loginDetails) {
+    public ResponseEntity<Map<String, String>> getToken(@RequestBody LoginDto loginDetails) {
         String login = loginDetails.getLogin();
         String password = loginDetails.getPassword();
-
+    
         // Vérifier si l'utilisateur existe dans la base de données avec le login donné
         User user = userService.getUserByEmail(login);
-
+    
         if (user == null || !userService.checkPassword(user, password)) {
             // Utilisateur non trouvé ou mot de passe incorrect
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found or incorrect credentials");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("error", "User not found or incorrect credentials"));
         }
-
+    
         // Utilisateur trouvé et mot de passe correspondant
-        String token = jwtService.generateToken(user);
-        return ResponseEntity.ok(token);
+        Map<String, String> tokenObject = jwtService.generateToken(user);
+        return ResponseEntity.ok(tokenObject);
     }
-
+    
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterDto registrationDetails) {
+    public ResponseEntity<Map<String, String>> registerUser(@RequestBody RegisterDto registrationDetails) {
         String email = registrationDetails.getEmail();
         String name = registrationDetails.getName();
         String password = registrationDetails.getPassword();
-
+    
         // Vérifier si l'utilisateur existe déjà avec cet email en utilisant le service
         boolean userExists = userService.isUserExistByEmail(email);
         if (userExists) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with this email already exists");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", "User with this email already exists"));
         }
-
+    
         try {
             // Utiliser le service pour créer un nouvel utilisateur
             User newUser = userService.createUser(email, name, password);
-
+    
             // Générer un token pour le nouvel utilisateur enregistré
-            String token = jwtService.generateToken(newUser);
-
-            return ResponseEntity.ok(token);
+            Map<String, String> tokenObject = jwtService.generateToken(newUser);
+    
+            return ResponseEntity.ok(tokenObject);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 
