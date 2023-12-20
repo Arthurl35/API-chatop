@@ -1,13 +1,18 @@
 package com.openclassrooms.apichatop.services;
 
+import com.openclassrooms.apichatop.dto.CreateRentalDto;
 import com.openclassrooms.apichatop.model.Rental;
 import com.openclassrooms.apichatop.model.User;
 import com.openclassrooms.apichatop.repository.RentalRepository;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Optional;
 
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
@@ -46,24 +51,37 @@ public class RentalService {
         });
     }
     
-    public Rental createRental(Rental newRental, User user) {
-        System.out.println("User ID: " + user.getId()); // Vérifie l'ID de l'utilisateur
+    public Rental createRental(CreateRentalDto newRentalDto, User user, MultipartFile picture) {
+        Rental newRental = new Rental();
+        newRental.setName(newRentalDto.getName());
+        newRental.setSurface(newRentalDto.getSurface());
+        newRental.setPrice(newRentalDto.getPrice());
+        newRental.setDescription(newRentalDto.getDescription());
         newRental.setOwner_id(user.getId());
         newRental.setCreated_at(new Timestamp(System.currentTimeMillis()));
         newRental.setUpdated_at(newRental.getCreated_at());
-    
-        System.out.println("New Rental Data: " + newRental.toString()); // Affiche les détails de la nouvelle location
-    
+
+        // Récupérer l'URL de l'image depuis le MultipartFile et stocker dans l'entité Rental
+        try {
+            String pictureUrl = savePictureAndGetUrl(picture);
+            newRental.setPicture(pictureUrl);
+        } catch (IOException e) {
+            // Gérer l'exception en fonction de vos besoins
+            e.printStackTrace();
+        }
+
         // Sauvegarde de la nouvelle location dans la base de données
         Rental savedRental = rentalRepository.save(newRental);
-    
-        if (savedRental != null) {
-            System.out.println("Rental created successfully: " + savedRental.getId()); // Vérifie l'ID de la location sauvegardée
-        } else {
-            System.out.println("Failed to create rental"); // Affiche si la création a échoué
-        }
-    
+
         return savedRental;
     }
+
+    // Méthode pour sauvegarder l'image et obtenir son URL
+    private String savePictureAndGetUrl(MultipartFile pictureFile) throws IOException {
+        // Pour l'exemple, je vais simplement retourner le nom du fichier comme URL
+        String fileName = pictureFile.getOriginalFilename();
+        return "http://localhost:9000/" + fileName; // À remplacer par la vraie URL
+    }
+
     
 }

@@ -80,9 +80,6 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<UserDto> getLoggedInUserInfo(Authentication authentication) {
-        if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
         Jwt jwtToken = (Jwt) authentication.getPrincipal();
         // Récupérer le claim "email" du token JWT

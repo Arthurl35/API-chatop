@@ -33,7 +33,7 @@ public class JWTService {
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.DAYS))
-                .subject(user.getEmail())
+                .subject(user.getName())
                 .claim("email", user.getEmail())
                 .build();
         
