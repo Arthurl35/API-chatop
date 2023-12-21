@@ -39,13 +39,13 @@ public class RentalController {
 
     }
 
-@GetMapping("")
-public Map<String, Iterable<Rental>> getAllRentals() {
-    Map<String, Iterable<Rental>> response = new HashMap<>();
-    Iterable<Rental> rentals = rentalService.getAllRentals();
-    response.put("rentals", rentals);
-    return response;
-}
+    @GetMapping("")
+    public Map<String, Iterable<Rental>> getAllRentals() {
+        Map<String, Iterable<Rental>> response = new HashMap<>();
+        Iterable<Rental> rentals = rentalService.getAllRentals();
+        response.put("rentals", rentals);
+        return response;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Rental> getRentalById(@PathVariable Long id) {

@@ -1,7 +1,7 @@
 package com.openclassrooms.apichatop.configuration;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
+import java.net.URI;
+
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -11,20 +11,20 @@ import software.amazon.awssdk.services.s3.S3Client;
 @Configuration
 public class AwsS3Config {
 
-    @Value("${aws.accessKeyId}")
-    private String accessKeyId;
+        // Récupérer les informations d'identification depuis le fichier de configuration
+        private static final String accessKeyId = "AKIAZCDJK6RGOLDE2PVJ"; // Remplacez par le code d'accès AWS
+        private static final String secretAccessKey = "G0sXol62EF9UUm+h294JCimhOQVMkq4oRmIL23bA"; // Remplacez par la clé secrète AWS
+        private static final String region = "eu-west-3"; // Remplacez par la région AWS
+        private static final String bucketName = "api-chatop"; // Remplacez par le nom du bucket S3
+        private static final String endpoint = "https://api-chatop-622991176780.s3-accesspoint.eu-west-3.amazonaws.com"; // ARN de votre point d'accès S3
 
-    @Value("${aws.secretAccessKey}")
-    private String secretAccessKey;
-
-    @Value("${aws.region}")
-    private String awsRegion;
-
-    @Bean
-    public S3Client s3Client() {
-        return S3Client.builder()
-                .region(Region.of(awsRegion))
-                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKeyId, secretAccessKey)))
-                .build();
-    }
+        public static S3Client createS3ClientWithAccessPoint() {
+            AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
+    
+            return S3Client.builder()
+                    .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                    .region(Region.of(region))
+                    .endpointOverride(URI.create(endpoint)) // Spécifiez le point d'accès ici
+                    .build();
+        }
 }
