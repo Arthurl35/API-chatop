@@ -23,7 +23,7 @@ public class MessageService {
         message.setMessage(messageDto.getMessage());
         message.setCreated_at(new Timestamp(System.currentTimeMillis()));
         message.setUserId(user.getId());
-        message.setRentalId(messageDto.getRentalId());
+        message.setRentalId(messageDto.getRental_id());
 
         return messageRepository.save(message);
     }

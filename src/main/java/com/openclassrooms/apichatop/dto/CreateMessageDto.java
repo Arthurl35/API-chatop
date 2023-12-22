@@ -9,6 +9,6 @@ public class CreateMessageDto {
     private String message;
 
     @NonNull
-    private Integer rentalId;
+    private Integer rental_id;
     
 }
