@@ -24,4 +24,5 @@ public class Rental {
     private Integer owner_id;
     private Timestamp created_at;
     private Timestamp updated_at;
+    
 }
