@@ -4,7 +4,7 @@ import com.openclassrooms.apichatop.dto.CreateRentalDto;
 import com.openclassrooms.apichatop.model.Rental;
 import com.openclassrooms.apichatop.model.User;
 import com.openclassrooms.apichatop.repository.RentalRepository;
-
+import com.openclassrooms.apichatop.repository.S3StorageRepository;
 
 import java.io.IOException;
 import java.sql.Timestamp;

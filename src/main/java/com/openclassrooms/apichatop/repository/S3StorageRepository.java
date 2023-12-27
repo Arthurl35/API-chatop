@@ -1,4 +1,4 @@
-package com.openclassrooms.apichatop.services;
+package com.openclassrooms.apichatop.repository;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
