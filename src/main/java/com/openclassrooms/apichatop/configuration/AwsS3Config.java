@@ -2,23 +2,34 @@ package com.openclassrooms.apichatop.configuration;
 
 import java.net.URI;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
+@PropertySource("classpath:aws.properties")
 public class AwsS3Config {
 
-        private static final String accessKeyId = "AKIAZCDJK6RGOLDE2PVJ"; 
-        private static final String secretAccessKey = "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"; 
-        private static final String region = "eu-west-3";
-        private static final String endpoint = "https://api-chatoppublique-622991176780.s3-accesspoint.eu-west-3.amazonaws.com";
+    @Value("${aws.accessKeyId}")
+    private String accessKeyId;
+
+    @Value("${aws.secretAccessKey}")
+    private String secretAccessKey;
+
+    @Value("${aws.region}")
+    private String region;
+
+    @Value("${aws.endpoint}")
+    private String endpoint;
         
         @Bean
-        public static S3Client createS3ClientWithAccessPoint() {
+        public S3Client createS3ClientWithAccessPoint() {
             AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
     
             return S3Client.builder()
