@@ -13,12 +13,15 @@ public class UserService {
     private UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
     
-
     public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
+    
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+    
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
