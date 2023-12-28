@@ -3,8 +3,8 @@ package com.openclassrooms.apichatop.controllers;
 import com.openclassrooms.apichatop.dto.CreateRentalDto;
 import com.openclassrooms.apichatop.model.Rental;
 import com.openclassrooms.apichatop.model.User;
+import com.openclassrooms.apichatop.services.AuthService;
 import com.openclassrooms.apichatop.services.RentalService;
-import com.openclassrooms.apichatop.services.UserService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,13 +29,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class RentalController {
 
     private RentalService rentalService;
-    private UserService userService;
+    private AuthService authService;
 
-    public RentalController(RentalService rentalService,
-            UserService userService) {
+    public RentalController(RentalService rentalService, AuthService authService) {
         this.rentalService = rentalService;
-        this.userService = userService;
-
+        this.authService = authService;
     }
 
     @GetMapping("")
@@ -70,19 +67,10 @@ public class RentalController {
             CreateRentalDto newRental,
             @RequestPart("picture") MultipartFile picture,
             Authentication authentication) {
-
-        Jwt jwtToken = (Jwt) authentication.getPrincipal();
-        // Récupérer le claim "email" du token JWT
-        String userEmail = jwtToken.getClaimAsString("email");
-
-        if (userEmail == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        User user = userService.getUserByEmail(userEmail);
-
+        
+        User user = authService.getLoggedInUser(authentication);
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Rental createdRental = rentalService.createRental(newRental, user, picture);

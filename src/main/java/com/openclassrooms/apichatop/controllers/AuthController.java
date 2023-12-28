@@ -17,6 +17,7 @@ import com.openclassrooms.apichatop.dto.LoginDto;
 import com.openclassrooms.apichatop.dto.RegisterDto;
 import com.openclassrooms.apichatop.dto.UserDto;
 import com.openclassrooms.apichatop.model.User;
+import com.openclassrooms.apichatop.services.AuthService;
 import com.openclassrooms.apichatop.services.JWTService;
 import com.openclassrooms.apichatop.services.UserService;
 
@@ -26,10 +27,12 @@ public class AuthController {
 
     private JWTService jwtService;
     private UserService userService;
+    private AuthService authService;
 
-    public AuthController(JWTService jwtService, UserService userService) {
+    public AuthController(JWTService jwtService, UserService userService, AuthService authService) {
         this.jwtService = jwtService;
         this.userService = userService;
+        this.authService = authService;
     }
 
     @PostMapping("/login")
@@ -81,17 +84,11 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<UserDto> getLoggedInUserInfo(Authentication authentication) {
 
-        Jwt jwtToken = (Jwt) authentication.getPrincipal();
-        // Récupérer le claim "email" du token JWT
-        String userEmail = jwtToken.getClaimAsString("email");
-
-        if (userEmail == null) {
+        User user = authService.getLoggedInUser(authentication);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        User user = userService.getUserByEmail(userEmail);
         
-
         if (user != null) {
             // Créez un UserDTO à partir des informations récupérées de l'utilisateur
             UserDto userDTO = new UserDto();
