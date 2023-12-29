@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -50,13 +51,11 @@ public class RentalController {
         return rental.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateRental(@PathVariable Long id, @RequestBody Rental updatedRental) {
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<?> updateRental(@PathVariable Long id, @ModelAttribute Rental updatedRental) {
         Optional<Rental> updated = rentalService.updateRental(id, updatedRental);
         if (updated.isPresent()) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Rental updated!");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(updated.get());
         } else {
             return ResponseEntity.notFound().build();
         }
