@@ -17,6 +17,8 @@ import com.openclassrooms.apichatop.model.User;
 import com.openclassrooms.apichatop.services.AuthService;
 import com.openclassrooms.apichatop.services.MessageService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/api/messages")
 public class MessageController {
@@ -29,8 +31,9 @@ public class MessageController {
         this.authService = authService;
     }
 
+    @Operation(summary = "Create a message", description = "Create and send a message")
     @PostMapping("")
-    public ResponseEntity<?> createMessage(@RequestBody CreateMessageDto messageDto, Authentication authentication) {
+    public ResponseEntity<Map<String, String>> createMessage(@RequestBody CreateMessageDto messageDto, Authentication authentication) {
 
         User user = authService.getLoggedInUser(authentication);
         if (user == null) {

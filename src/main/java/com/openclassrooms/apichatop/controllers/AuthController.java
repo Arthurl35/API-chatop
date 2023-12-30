@@ -21,6 +21,8 @@ import com.openclassrooms.apichatop.services.AuthService;
 import com.openclassrooms.apichatop.services.JWTService;
 import com.openclassrooms.apichatop.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -37,6 +39,7 @@ public class AuthController {
         this.modelMapper = modelMapper;
     }
 
+    @Operation(summary = "Get JWT token", description = "Authenticate user and get JWT token")
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> getToken(@RequestBody LoginDto loginDetails) {
         String email = loginDetails.getEmail();
@@ -56,6 +59,7 @@ public class AuthController {
         return ResponseEntity.ok(tokenObject);
     }
     
+    @Operation(summary = "Register user", description = "Register a new user")
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerUser(@RequestBody RegisterDto registrationDetails) {
         String email = registrationDetails.getEmail();
@@ -82,7 +86,8 @@ public class AuthController {
                     .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
-
+    
+    @Operation(summary = "Get logged-in user info", description = "Retrieve details of the logged-in user")
     @GetMapping("/me")
     public ResponseEntity<UserDto> getLoggedInUserInfo(Authentication authentication) {
 

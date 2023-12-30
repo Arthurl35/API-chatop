@@ -6,6 +6,8 @@ import com.openclassrooms.apichatop.model.User;
 import com.openclassrooms.apichatop.services.AuthService;
 import com.openclassrooms.apichatop.services.RentalService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,7 +21,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,6 +38,7 @@ public class RentalController {
         this.authService = authService;
     }
 
+    @Operation(summary = "Get all rentals", description = "Get a list of all rentals")
     @GetMapping("")
     public Map<String, Iterable<Rental>> getAllRentals() {
         Map<String, Iterable<Rental>> response = new HashMap<>();
@@ -45,24 +47,29 @@ public class RentalController {
         return response;
     }
 
+    @Operation(summary = "Get rental by ID", description = "Retrieve a rental by its ID")
     @GetMapping("/{id}")
     public ResponseEntity<Rental> getRentalById(@PathVariable Long id) {
         Optional<Rental> rental = rentalService.getRentalById(id);
         return rental.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Update rental by ID", description = "Update details of a rental by its ID")
     @PutMapping(value = "/{id}")
-    public ResponseEntity<?> updateRental(@PathVariable Long id, @ModelAttribute Rental updatedRental) {
+    public ResponseEntity<Map<String, String>> updateRental(@PathVariable Long id, @ModelAttribute Rental updatedRental) {
         Optional<Rental> updated = rentalService.updateRental(id, updatedRental);
         if (updated.isPresent()) {
-            return ResponseEntity.ok(updated.get());
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Rental updated!");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
+    @Operation(summary = "Create rental", description = "Create a new rental")
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createRental(
+    public ResponseEntity<Map<String, String>> createRental(
             CreateRentalDto newRental,
             @RequestPart("picture") MultipartFile picture,
             Authentication authentication) {

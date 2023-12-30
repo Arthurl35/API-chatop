@@ -12,6 +12,8 @@ import com.openclassrooms.apichatop.dto.UserDto;
 import com.openclassrooms.apichatop.model.User;
 import com.openclassrooms.apichatop.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -24,15 +26,17 @@ public class UserController {
         this.modelMapper = modelMapper;
     }
 
+    @Operation(summary = "Get user by ID", description = "Retrieve user details by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
-
-        if (user != null) {
-            UserDto userDto = modelMapper.map(user, UserDto.class);
-            return ResponseEntity.ok(userDto);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
+    
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } 
+    
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+        return ResponseEntity.ok(userDto);
     }
+    
 }
