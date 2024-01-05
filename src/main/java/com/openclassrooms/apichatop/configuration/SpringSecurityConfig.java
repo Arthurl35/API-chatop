@@ -29,6 +29,7 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 @EnableWebSecurity
 public class SpringSecurityConfig {
 
+// This code is configuring the security settings for the application using Spring Security.
 	private String jwtKey = generateKey();
 
 	private String generateKey() {

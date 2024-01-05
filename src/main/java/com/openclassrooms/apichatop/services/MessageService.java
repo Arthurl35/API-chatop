@@ -18,6 +18,17 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
+
+/**
+ * The function creates a new message object with the provided messageDto and user information and
+ * saves it in the message repository.
+ * 
+ * @param messageDto The `messageDto` parameter is an object of type `CreateMessageDto`. It contains
+ * the necessary information to create a new message, such as the message content and the rental ID.
+ * @param user The `user` parameter is an instance of the `User` class. It represents the user who is
+ * creating the message.
+ * @return The method is returning a Message object.
+ */
     public Message createMessage(CreateMessageDto messageDto, User user) {
         Message message = new Message();
         message.setMessage(messageDto.getMessage());

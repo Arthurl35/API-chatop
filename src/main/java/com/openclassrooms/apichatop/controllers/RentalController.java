@@ -62,9 +62,9 @@ public class RentalController {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Rental updated!");
             return ResponseEntity.ok(response);
-        } else {
+        } 
             return ResponseEntity.notFound().build();
-        }
+        
     }
 
     @Operation(summary = "Create rental", description = "Create a new rental")
